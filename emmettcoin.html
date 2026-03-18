@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EmmettCoin — The Future of Fake Finance</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #f5c842;
+    --gold-dark: #c9a020;
+    --gold-glow: rgba(245, 200, 66, 0.3);
+    --black: #0a0a0a;
+    --dark: #111114;
+    --panel: #16161a;
+    --panel2: #1e1e24;
+    --border: rgba(245, 200, 66, 0.18);
+    --text: #e8e8e8;
+    --muted: #888;
+    --green: #39d98a;
+    --red: #ff5c5c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 64px;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-shadow: 0 0 20px var(--gold-glow);
+    cursor: pointer;
+  }
+
+  .nav-logo span { color: var(--text); }
+
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-cta {
+    display: flex;
+    gap: 12px;
+  }
+
+  /* PAGES */
+  .page { display: none; min-height: 100vh; padding-top: 64px; }
+  .page.active { display: block; }
+
+  /* ====== LANDING ====== */
+  #page-home {
+    display: none;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,200,66,0.07) 0%, transparent 70%);
+  }
+  #page-home.active { display: block; }
+
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 20px 60px;
+    position: relative;
+  }
+
+  .hero-badge {
+    background: rgba(245,200,66,0.12);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 18px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(70px, 12vw, 140px);
+    line-height: 0.9;
+    letter-spacing: 4px;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .hero h1 .accent { color: var(--gold); text-shadow: 0 0 40px var(--gold-glow); }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 480px;
+    line-height: 1.6;
+    margin-bottom: 44px;
+  }
+
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+
+  .btn-primary {
+    background: var(--gold);
+    color: #000;
+    border: none;
+    padding: 14px 32px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .btn-primary:hover {
+    background: var(--gold-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--gold-glow);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 14px 32px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* TICKER */
+  .ticker-wrap {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 12px 0;
+  }
+
+  .ticker-inner {
+    display: inline-block;
+    animation: ticker 20s linear infinite;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+  }
+
+  .ticker-inner span { margin: 0 40px; }
+  .ticker-inner .up { color: var(--green); }
+  .ticker-inner .down { color: var(--red); }
+  .ticker-inner .coin { color: var(--gold); }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* STATS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat-card {
+    background: var(--panel);
+    padding: 32px 28px;
+    text-align: center;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 10px;
+  }
+
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    color: var(--gold);
+    letter-spacing: 2px;
+  }
+
+  .stat-change {
+    font-size: 12px;
+    color: var(--green);
+    margin-top: 4px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* FEATURES */
+  .features {
+    padding: 80px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    letter-spacing: 3px;
+    margin-bottom: 48px;
+    text-align: center;
+  }
+
+  .section-title span { color: var(--gold); }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+  }
+
+  .feature-icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+
+  .feature-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .feature-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ====== AUTH PAGES ====== */
+  #page-signup, #page-login, #page-dashboard, #page-buy {
+    display: none;
+  }
+  #page-signup.active, #page-login.active, #page-dashboard.active, #page-buy.active {
+    display: block;
+  }
+
+  .auth-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 64px);
+    padding: 40px 20px;
+  }
+
+  .auth-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 48px 44px;
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .auth-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 20%; right: 20%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .auth-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px;
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .auth-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 36px;
+  }
+
+  .auth-subtitle a {
+    color: var(--gold);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .form-group { margin-bottom: 20px; }
+
+  .form-label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: var(--panel2);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .form-input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-glow);
+  }
+
+  .form-input::placeholder { color: rgba(255,255,255,0.2); }
+
+  .form-submit {
+    width: 100%;
+    background: var(--gold);
+    color: #000;
+    border: none;
+    padding: 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+  }
+
+  .form-submit:hover {
+    background: var(--gold-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px var(--gold-glow);
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .alert {
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    display: none;
+  }
+
+  .alert.success {
+    background: rgba(57, 217, 138, 0.1);
+    border: 1px solid rgba(57, 217, 138, 0.3);
+    color: var(--green);
+    display: block;
+  }
+
+  .alert.error {
+    background: rgba(255, 92, 92, 0.1);
+    border: 1px solid rgba(255, 92, 92, 0.3);
+    color: var(--red);
+    display: block;
+  }
+
+  /* ====== DASHBOARD ====== */
+  .dashboard {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 32px;
+  }
+
+  .dash-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .dash-greeting {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .dash-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 3px;
+    color: var(--text);
+  }
+
+  .dash-name span { color: var(--gold); }
+
+  .balance-card {
+    background: linear-gradient(135deg, #1a1a0a 0%, var(--panel) 100%);
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 28px;
+    box-shadow: 0 0 40px rgba(245,200,66,0.08);
+  }
+
+  .balance-card::after {
+    content: 'ⓔ';
+    position: absolute;
+    right: -10px;
+    top: -20px;
+    font-size: 140px;
+    color: rgba(245,200,66,0.05);
+    font-family: 'Bebas Neue';
+  }
+
+  .balance-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 12px;
+  }
+
+  .balance-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    letter-spacing: 2px;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .balance-usd {
+    font-size: 14px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  @media (max-width: 640px) {
+    .dash-grid { grid-template-columns: 1fr; }
+    .auth-card { padding: 32px 24px; }
+    nav { padding: 0 20px; }
+    .nav-links a { display: none; }
+  }
+
+  .dash-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+  }
+
+  .dash-card-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 16px;
+  }
+
+  .market-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 44px;
+    color: var(--gold);
+    letter-spacing: 2px;
+  }
+
+  .market-change {
+    display: inline-block;
+    background: rgba(57, 217, 138, 0.15);
+    color: var(--green);
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-family: 'Space Mono', monospace;
+    margin-top: 6px;
+  }
+
+  .tx-list { list-style: none; }
+
+  .tx-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .tx-item:last-child { border-bottom: none; }
+
+  .tx-type { color: var(--muted); font-family: 'Space Mono', monospace; font-size: 11px; }
+  .tx-amount-pos { color: var(--green); font-family: 'Space Mono', monospace; font-weight: 700; }
+  .tx-amount-neg { color: var(--red); font-family: 'Space Mono', monospace; font-weight: 700; }
+
+  /* ====== BUY PAGE ====== */
+  .buy-wrap {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 60px 24px;
+  }
+
+  .buy-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+
+  .buy-title span { color: var(--gold); }
+
+  .buy-subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 36px;
+  }
+
+  .buy-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .buy-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 20%; right: 20%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .amount-display {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .amount-display .em-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .amount-display .em-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--gold);
+    letter-spacing: 2px;
+  }
+
+  .amount-display .em-usd {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    margin-top: 4px;
+  }
+
+  .quick-amounts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 16px 0 24px;
+  }
+
+  .qa-btn {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 6px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .qa-btn:hover, .qa-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(245,200,66,0.06);
+  }
+
+  .payment-methods {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .pm-btn {
+    background: var(--panel2);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+  }
+
+  .pm-btn .pm-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+  .pm-btn:hover, .pm-btn.active { border-color: var(--gold); color: var(--gold); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 36px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+  }
+
+  .modal-icon { font-size: 56px; margin-bottom: 16px; }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .modal-body {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+
+  .modal-body strong { color: var(--gold); font-family: 'Space Mono', monospace; }
+
+  .coin-spin {
+    animation: spin 2s linear infinite;
+    display: inline-block;
+  }
+
+  @keyframes spin {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+  }
+
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .price-row:last-of-type { border-bottom: none; }
+  .price-row .label { color: var(--muted); }
+  .price-row .val { color: var(--text); }
+  .price-row.total .val { color: var(--gold); font-size: 15px; }
+
+  .logo-coin {
+    width: 36px;
+    height: 36px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue';
+    font-size: 16px;
+    color: #000;
+    margin-right: 8px;
+    vertical-align: middle;
+    box-shadow: 0 0 12px var(--gold-glow);
+  }
+
+  /* ====== CHART ====== */
+  .chart-section {
+    padding: 60px 40px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .chart-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .chart-title-block .chart-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    margin-bottom: 6px;
+  }
+
+  .chart-live-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    letter-spacing: 2px;
+    line-height: 1;
+    transition: color 0.3s;
+  }
+
+  .chart-live-change {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .chart-timeframes {
+    display: flex;
+    gap: 6px;
+  }
+
+  .tf-btn {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 14px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tf-btn:hover, .tf-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(245,200,66,0.08);
+  }
+
+  .chart-container {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chart-container canvas {
+    width: 100% !important;
+    display: block;
+  }
+
+  .live-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-right: 6px;
+    animation: pulse-dot 1.2s ease-in-out infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .chart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .volatility-meter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .vol-bar {
+    width: 80px;
+    height: 4px;
+    background: var(--panel2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .vol-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--gold), var(--red));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  /* Dashboard mini chart */
+  .dash-chart-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+
+  .disclaimer {
+    background: rgba(245,200,66,0.06);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    text-align: center;
+    margin-top: 40px;
+    line-height: 1.7;
+    letter-spacing: 0.3px;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <span class="logo-coin">E</span>EMMETT<span>COIN</span>
+  </div>
+  <div class="nav-links">
+    <a onclick="showPage('home')">Markets</a>
+    <a onclick="requireAuth('buy')">Buy</a>
+    <a onclick="requireAuth('dashboard')">Portfolio</a>
+  </div>
+  <div class="nav-cta" id="nav-auth">
+    <button class="btn-ghost" onclick="showPage('login')" style="padding:9px 20px;font-size:12px;">Log In</button>
+    <button class="btn-primary" onclick="showPage('signup')" style="padding:9px 20px;font-size:12px;">Sign Up</button>
+  </div>
+  <div class="nav-cta" id="nav-user" style="display:none;">
+    <span style="font-size:13px;color:var(--muted);font-family:'Space Mono',monospace;" id="nav-username"></span>
+    <button class="btn-ghost" onclick="logout()" style="padding:9px 20px;font-size:12px;">Log Out</button>
+  </div>
+</nav>
+
+<!-- ====== HOME ====== -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-badge">🪙 Now Live on Mainnet</div>
+    <h1>THE <span class="accent">EMMETT</span><br>STANDARD</h1>
+    <p class="hero-sub">The world's fastest-growing cryptocurrency. Built on cutting-edge blockchain technology and powered by a global community of believers.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="showPage('signup')">Get Started — It's Free</button>
+      <button class="btn-ghost" onclick="requireAuth('buy')">Buy EmmettCoin</button>
+    </div>
+  </div>
+
+  <div class="ticker-wrap">
+    <div class="ticker-inner">
+      <span class="coin">EMC/USD</span> <span class="up">$4.20 ▲ 6.9%</span>
+      <span class="coin">EMC/BTC</span> <span class="up">0.000069 ▲ 2.1%</span>
+      <span class="coin">EMC/ETH</span> <span class="down">0.00420 ▼ 0.5%</span>
+      <span class="coin">Market Cap</span> <span>$420,000,000</span>
+      <span class="coin">Vol 24h</span> <span class="up">$6,900,000 ▲ 12%</span>
+      <span class="coin">EMC/USD</span> <span class="up">$4.20 ▲ 6.9%</span>
+      <span class="coin">EMC/BTC</span> <span class="up">0.000069 ▲ 2.1%</span>
+      <span class="coin">EMC/ETH</span> <span class="down">0.00420 ▼ 0.5%</span>
+      <span class="coin">Market Cap</span> <span>$420,000,000</span>
+      <span class="coin">Vol 24h</span> <span class="up">$6,900,000 ▲ 12%</span>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Current Price</div>
+      <div class="stat-value">$4.20</div>
+      <div class="stat-change">▲ +6.9% (24h)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Market Cap</div>
+      <div class="stat-value">$420M</div>
+      <div class="stat-change">▲ All time high</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Supply</div>
+      <div class="stat-value">100M</div>
+      <div class="stat-change">EMC Minted</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Holders</div>
+      <div class="stat-value">69,420</div>
+      <div class="stat-change">▲ Growing daily</div>
+    </div>
+  </div>
+
+  <!-- LIVE CHART -->
+  <div class="chart-section">
+    <div class="chart-header">
+      <div class="chart-title-block">
+        <div class="chart-label"><span class="live-dot"></span>Live Price — EMC/USD</div>
+        <div class="chart-live-price" id="home-live-price">$4.20</div>
+        <div class="chart-live-change" id="home-live-change" style="color:var(--green);">▲ +6.9%</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;">
+        <div class="chart-timeframes">
+          <div class="tf-btn active" onclick="setTimeframe('1m',this)">1M</div>
+          <div class="tf-btn" onclick="setTimeframe('5m',this)">5M</div>
+          <div class="tf-btn" onclick="setTimeframe('1h',this)">1H</div>
+          <div class="tf-btn" onclick="setTimeframe('1d',this)">1D</div>
+        </div>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">
+          Vol: <span id="home-vol" style="color:var(--text);">$6.9M</span>
+        </div>
+      </div>
+    </div>
+    <div class="chart-container">
+      <canvas id="emcChart" height="280"></canvas>
+    </div>
+    <div class="chart-footer">
+      <span>EmmettCoin (EMC) · EMC Exchange · Updated every 0.5s</span>
+      <div class="volatility-meter">
+        VOLATILITY:
+        <div class="vol-bar"><div class="vol-fill" id="vol-fill" style="width:85%"></div></div>
+        <span id="vol-label" style="color:var(--red);">HIGH</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="section-title">WHY <span>EMMETT</span>COIN?</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Lightning Fast</div>
+        <div class="feature-desc">Transactions confirmed in under a second. EmmettCoin's next-generation network handles thousands of transactions per second.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">Bank-Grade Security</div>
+        <div class="feature-desc">Protected by 256-bit encryption and a decentralized network of validators. Your assets are safe with us.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <div class="feature-title">Strong Performance</div>
+        <div class="feature-desc">Our proprietary AlgoVibe™ consensus mechanism drives efficiency and long-term value for holders worldwide.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <div class="feature-title">Global Network</div>
+        <div class="feature-desc">Accepted across a growing ecosystem of merchants, exchanges, and DeFi protocols in over 60 countries.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏦</div>
+        <div class="feature-title">Institutional Grade</div>
+        <div class="feature-desc">Trusted by thousands of retail and institutional investors. EmmettCoin is audited, compliant, and built to last.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎲</div>
+        <div class="feature-title">Yield & Staking</div>
+        <div class="feature-desc">Stake your EMC and earn competitive yields. Put your holdings to work and grow your portfolio passively.</div>
+      </div>
+    </div>
+  </div>
+  <div class="disclaimer">EmmettCoin (EMC) is a digital asset. Cryptocurrency investments carry risk. Past performance is not indicative of future results. Trade responsibly.</div>
+</div>
+
+<!-- ====== SIGNUP ====== -->
+<div id="page-signup" class="page">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-title">Join the<br>Revolution</div>
+      <div class="auth-subtitle">Already have an account? <a onclick="showPage('login')">Sign in</a></div>
+
+      <div id="signup-alert" class="alert"></div>
+
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" id="signup-username" type="text" placeholder="emmett_nakamoto">
+      </div>
+      <button class="form-submit" onclick="doSignup()">Create My Account</button>
+
+      <div class="divider">BONUS</div>
+      <div style="text-align:center;font-size:13px;color:var(--muted);">Get <strong style="color:var(--gold);font-family:'Space Mono',monospace;">100 FREE EMC</strong> when you sign up today 🎁</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== LOGIN ====== -->
+<div id="page-login" class="page">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-title">Welcome<br>Back</div>
+      <div class="auth-subtitle">New here? <a onclick="showPage('signup')">Create an account</a></div>
+
+      <div id="login-alert" class="alert"></div>
+
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" id="login-username" type="text" placeholder="emmett_nakamoto">
+      </div>
+      <button class="form-submit" onclick="doLogin()">Sign In</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== DASHBOARD ====== -->
+<div id="page-dashboard" class="page">
+  <div class="dashboard">
+    <div class="dash-header">
+      <div>
+        <div class="dash-greeting">Your Portfolio</div>
+        <div class="dash-name">GM, <span id="dash-username">Emmett</span></div>
+      </div>
+      <button class="btn-primary" onclick="showPage('buy')" style="align-self:center;">Buy More EMC</button>
+    </div>
+
+    <div class="balance-card">
+      <div class="balance-label">Total EmmettCoin Balance</div>
+      <div class="balance-amount" id="dash-balance">100</div>
+      <div class="balance-usd">≈ <span id="dash-usd">$420.00</span> USD (totally fake)</div>
+    </div>
+
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-card-title">Market Price</div>
+        <div class="market-price">$4.20</div>
+        <div class="market-change">▲ +6.9% today</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">Your Stats</div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;">
+          <div>
+            <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:4px;">TOTAL SPENT</div>
+            <div style="font-family:'Bebas Neue';font-size:28px;color:var(--gold);" id="dash-spent">$0.00</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:4px;">UNREALIZED GAIN</div>
+            <div style="font-family:'Bebas Neue';font-size:28px;color:var(--green);" id="dash-profit">$0.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSURANCE CARD -->
+    <div style="background:linear-gradient(135deg,#0e1a14 0%,var(--panel) 100%);border:1px solid rgba(57,217,138,0.25);border-radius:12px;padding:28px 32px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-10px;top:-16px;font-size:110px;opacity:0.04;line-height:1;">🛡️</div>
+      <div>
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#39d98a;font-family:'Space Mono',monospace;margin-bottom:6px;">EmmettCoin Protection Plan™</div>
+        <div style="font-family:'Bebas Neue';font-size:30px;letter-spacing:2px;margin-bottom:6px;">PORTFOLIO INSURANCE</div>
+        <div style="font-size:13px;color:var(--muted);max-width:400px;line-height:1.6;">
+          Protect your imaginary assets from completely made-up market forces. Premium: <strong style="color:var(--text);font-family:'Space Mono',monospace;">$200 USD</strong> worth of EMC per month.
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px;font-family:'Space Mono',monospace;">
+          ≈ <span id="insurance-emc-cost">47.62 EMC</span> at current price · Deducted instantly
+        </div>
+      </div>
+      <button onclick="payInsurance()" style="background:#39d98a;color:#000;border:none;padding:14px 28px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:6px;cursor:pointer;white-space:nowrap;transition:all 0.2s;flex-shrink:0;" onmouseover="this.style.background='#2ab870';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#39d98a';this.style.transform='translateY(0)'">
+        🛡️ Pay Insurance
+      </button>
+    </div>
+
+    <div class="dash-chart-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div>
+          <div class="dash-card-title" style="margin-bottom:4px;">Live Market Chart</div>
+          <div style="font-family:'Bebas Neue';font-size:32px;color:var(--gold);letter-spacing:2px;" id="dash-live-price">$4.20</div>
+        </div>
+        <span class="market-change" id="dash-live-change">▲ +6.9%</span>
+      </div>
+      <canvas id="dashChart" height="140"></canvas>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card-title">Transaction History</div>
+      <ul class="tx-list" id="tx-list">
+        <li class="tx-item">
+          <div>
+            <div style="font-size:13px;font-weight:500;">Welcome Bonus</div>
+            <div class="tx-type">AIRDROP · Just now</div>
+          </div>
+          <div class="tx-amount-pos">+100 EMC</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ====== BUY ====== -->
+<div id="page-buy" class="page">
+  <div class="buy-wrap">
+    <div class="buy-title">BUY <span>EMMETT</span>COIN</div>
+    <div class="buy-subtitle">Current price: $4.20 per EMC · Totally fake money only</div>
+
+    <div class="buy-card">
+      <div class="dash-card-title" style="margin-bottom:16px;">Enter Amount (USD)</div>
+
+      <div class="form-group">
+        <input class="form-input" id="buy-amount" type="number" placeholder="Enter USD amount..." oninput="updateBuyPreview()" style="font-size:18px;padding:16px;">
+      </div>
+
+      <div class="quick-amounts">
+        <div class="qa-btn" onclick="setAmount(10)">$10</div>
+        <div class="qa-btn" onclick="setAmount(25)">$25</div>
+        <div class="qa-btn" onclick="setAmount(50)">$50</div>
+        <div class="qa-btn" onclick="setAmount(100)">$100</div>
+      </div>
+
+      <div class="amount-display">
+        <div class="em-label">You will receive</div>
+        <div class="em-value" id="buy-preview">0 EMC</div>
+        <div class="em-usd">at $4.20 per EmmettCoin</div>
+      </div>
+
+      <div class="dash-card-title" style="margin:20px 0 12px;">Payment Method</div>
+      <div class="payment-methods">
+        <div class="pm-btn active" id="pm-card" onclick="selectPM('card')">
+          <span class="pm-icon">💳</span>Card
+        </div>
+        <div class="pm-btn" id="pm-bank" onclick="selectPM('bank')">
+          <span class="pm-icon">🏦</span>Bank
+        </div>
+        <div class="pm-btn" id="pm-crypto" onclick="selectPM('crypto')">
+          <span class="pm-icon">₿</span>Crypto
+        </div>
+      </div>
+
+      <div id="pm-card-fields">
+        <div class="form-group">
+          <label class="form-label">Card Number</label>
+          <input class="form-input" placeholder="4242 4242 4242 4242" maxlength="19" oninput="formatCard(this)">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Expiry</label>
+            <input class="form-input" placeholder="MM/YY" maxlength="5">
+          </div>
+          <div class="form-group">
+            <label class="form-label">CVC</label>
+            <input class="form-input" placeholder="•••" maxlength="3">
+          </div>
+        </div>
+      </div>
+
+      <div id="pm-bank-fields" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Routing Number</label>
+          <input class="form-input" placeholder="021000021">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Account Number</label>
+          <input class="form-input" placeholder="Your fake account #">
+        </div>
+      </div>
+
+      <div id="pm-crypto-fields" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Send From Wallet</label>
+          <input class="form-input" placeholder="0x...your wallet address">
+        </div>
+        <div style="background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:14px;font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:8px;">
+          📬 Send fake crypto to: 0xEMMETT...C01N<br>
+          <span style="color:var(--gold);">Note: This address is also completely fake.</span>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;background:var(--panel2);border-radius:8px;padding:16px;">
+        <div class="price-row">
+          <span class="label">Subtotal</span>
+          <span class="val" id="pr-sub">$0.00</span>
+        </div>
+        <div class="price-row">
+          <span class="label">Emmett Fee (0%)</span>
+          <span class="val" style="color:var(--green);">FREE!</span>
+        </div>
+        <div class="price-row total">
+          <span class="label" style="color:var(--text);font-weight:600;">Total Charged</span>
+          <span class="val" id="pr-total">$0.00</span>
+        </div>
+      </div>
+
+      <button class="form-submit" onclick="doPurchase()" style="margin-top:20px;font-size:14px;padding:16px;">
+        🪙 Complete Purchase
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="success-modal">
+  <div class="modal">
+    <div class="modal-icon"><span class="coin-spin">🪙</span></div>
+    <div class="modal-title" style="color:var(--gold);">Purchase Complete!</div>
+    <div class="modal-body" id="modal-body">
+      You just bought <strong id="modal-emc">0 EMC</strong> for <strong id="modal-usd">$0.00</strong>.<br><br>
+      Your fake coins have been added to your totally real wallet. Congratulations on your very wise imaginary investment!
+    </div>
+    <button class="btn-primary" onclick="closeModal()" style="width:100%;">View My Portfolio</button>
+  </div>
+</div>
+
+<script>
+  // ---- STATE ----
+  let currentUser = null;
+  let accounts = JSON.parse(localStorage.getItem('emc_accounts') || '{}');
+  let selectedPM = 'card';
+
+  // ---- CHART ENGINE ----
+  const CHART_MAX_POINTS = 120;
+  let emcPrice = 4.20;
+  let priceHistory = [];
+  let timeLabels = [];
+  let homeChart = null;
+  let dashChart = null;
+  let currentTF = '1m';
+  let chartTick = 0;
+  let openPrice = 4.20;
+
+  // Generate initial history
+  function seedHistory(n) {
+    priceHistory = [];
+    timeLabels = [];
+    let p = 4.20;
+    for (let i = n; i >= 0; i--) {
+      p = nextPrice(p);
+      priceHistory.push(p);
+      timeLabels.push('');
+    }
+    emcPrice = priceHistory[priceHistory.length - 1];
+    openPrice = priceHistory[0];
+  }
+
+  function nextPrice(p) {
+    // Wild volatility: multiple random shocks
+    const shock = (Math.random() - 0.48) * 0.28;      // base drift
+    const spike = Math.random() < 0.07 ? (Math.random() - 0.5) * 1.2 : 0;  // 7% chance big spike
+    const crash = Math.random() < 0.04 ? -(Math.random() * 0.8) : 0;        // 4% chance mini crash
+    let next = p * (1 + shock + spike + crash);
+    next = Math.max(0.50, Math.min(next, 25.0)); // keep in sane range
+    return parseFloat(next.toFixed(4));
+  }
+
+  function buildGradient(ctx, canvas, isUp) {
+    const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    if (isUp) {
+      grad.addColorStop(0, 'rgba(57,217,138,0.25)');
+      grad.addColorStop(1, 'rgba(57,217,138,0.01)');
+    } else {
+      grad.addColorStop(0, 'rgba(255,92,92,0.25)');
+      grad.addColorStop(1, 'rgba(255,92,92,0.01)');
+    }
+    return grad;
+  }
+
+  function drawChart(canvasId, data, compact) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return null;
+    const ctx = canvas.getContext('2d');
+
+    // HiDPI
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const W = rect.width || canvas.parentElement.offsetWidth || 900;
+    const H = compact ? 140 : 280;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
+
+    ctx.clearRect(0, 0, W, H);
+
+    if (data.length < 2) return ctx;
+
+    const pad = { top: 16, right: 16, bottom: compact ? 8 : 30, left: compact ? 8 : 56 };
+    const w = W - pad.left - pad.right;
+    const h = H - pad.top - pad.bottom;
+
+    const minP = Math.min(...data) * 0.97;
+    const maxP = Math.max(...data) * 1.03;
+    const range = maxP - minP || 1;
+
+    const isUp = data[data.length - 1] >= data[0];
+    const lineColor = isUp ? '#39d98a' : '#ff5c5c';
+
+    const xOf = i => pad.left + (i / (data.length - 1)) * w;
+    const yOf = v => pad.top + h - ((v - minP) / range) * h;
+
+    // Grid lines
+    if (!compact) {
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+      ctx.lineWidth = 1;
+      for (let g = 0; g <= 4; g++) {
+        const y = pad.top + (g / 4) * h;
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + w, y); ctx.stroke();
+        const val = maxP - (g / 4) * range;
+        ctx.fillStyle = 'rgba(136,136,136,0.7)';
+        ctx.font = '10px Space Mono, monospace';
+        ctx.textAlign = 'right';
+        ctx.fillText('$' + val.toFixed(2), pad.left - 6, y + 4);
+      }
+    }
+
+    // Area fill
+    ctx.beginPath();
+    ctx.moveTo(xOf(0), yOf(data[0]));
+    for (let i = 1; i < data.length; i++) {
+      const x0 = xOf(i - 1), y0 = yOf(data[i - 1]);
+      const x1 = xOf(i), y1 = yOf(data[i]);
+      const cpx = (x0 + x1) / 2;
+      ctx.bezierCurveTo(cpx, y0, cpx, y1, x1, y1);
+    }
+    ctx.lineTo(xOf(data.length - 1), pad.top + h);
+    ctx.lineTo(xOf(0), pad.top + h);
+    ctx.closePath();
+    ctx.fillStyle = buildGradient(ctx, { height: H }, isUp);
+    ctx.fill();
+
+    // Line
+    ctx.beginPath();
+    ctx.moveTo(xOf(0), yOf(data[0]));
+    for (let i = 1; i < data.length; i++) {
+      const x0 = xOf(i - 1), y0 = yOf(data[i - 1]);
+      const x1 = xOf(i), y1 = yOf(data[i]);
+      const cpx = (x0 + x1) / 2;
+      ctx.bezierCurveTo(cpx, y0, cpx, y1, x1, y1);
+    }
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = compact ? 1.5 : 2;
+    ctx.stroke();
+
+    // Live dot at end
+    const lx = xOf(data.length - 1);
+    const ly = yOf(data[data.length - 1]);
+    ctx.beginPath();
+    ctx.arc(lx, ly, compact ? 3 : 5, 0, Math.PI * 2);
+    ctx.fillStyle = lineColor;
+    ctx.fill();
+    // Glow ring
+    ctx.beginPath();
+    ctx.arc(lx, ly, compact ? 6 : 10, 0, Math.PI * 2);
+    ctx.strokeStyle = lineColor.replace(')', ', 0.3)').replace('rgb', 'rgba');
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    return ctx;
+  }
+
+  function updatePriceUI() {
+    const pct = ((emcPrice - openPrice) / openPrice * 100);
+    const isUp = pct >= 0;
+    const arrow = isUp ? '▲' : '▼';
+    const color = isUp ? 'var(--green)' : 'var(--red)';
+    const priceStr = '$' + emcPrice.toFixed(4);
+    const changeStr = arrow + ' ' + (isUp ? '+' : '') + pct.toFixed(2) + '%';
+
+    // Home chart UI
+    const hp = document.getElementById('home-live-price');
+    const hc = document.getElementById('home-live-change');
+    if (hp) { hp.textContent = priceStr; hp.style.color = color; }
+    if (hc) { hc.textContent = changeStr; hc.style.color = color; }
+
+    // Dashboard UI
+    const dp = document.getElementById('dash-live-price');
+    const dc = document.getElementById('dash-live-change');
+    if (dp) { dp.textContent = priceStr; dp.style.color = color; }
+    if (dc) {
+      dc.textContent = changeStr;
+      dc.style.background = isUp ? 'rgba(57,217,138,0.15)' : 'rgba(255,92,92,0.15)';
+      dc.style.color = isUp ? 'var(--green)' : 'var(--red)';
+    }
+
+    // Ticker update
+    const tickEl = document.querySelector('.ticker-inner');
+    if (tickEl) {
+      const vol = (Math.random() * 5 + 4).toFixed(1);
+      document.getElementById('home-vol').textContent = '$' + vol + 'M';
+    }
+
+    // Volatility meter
+    const vol = Math.min(100, Math.abs(pct) * 3 + 40);
+    const vf = document.getElementById('vol-fill');
+    const vl = document.getElementById('vol-label');
+    if (vf) vf.style.width = vol + '%';
+    if (vl) {
+      if (vol > 80) { vl.textContent = 'EXTREME'; vl.style.color = 'var(--red)'; }
+      else if (vol > 55) { vl.textContent = 'HIGH'; vl.style.color = 'var(--gold)'; }
+      else { vl.textContent = 'MEDIUM'; vl.style.color = 'var(--green)'; }
+    }
+
+    // Update buy page subtitle
+    const bs = document.querySelector('.buy-subtitle');
+    if (bs) bs.textContent = `Current price: ${priceStr} per EMC · Totally fake money only`;
+  }
+
+  function tickChart() {
+    emcPrice = nextPrice(emcPrice);
+    priceHistory.push(emcPrice);
+    if (priceHistory.length > CHART_MAX_POINTS) priceHistory.shift();
+
+    chartTick++;
+    updatePriceUI();
+
+    const activePage = document.querySelector('.page.active');
+    if (activePage && activePage.id === 'page-home') {
+      drawChart('emcChart', priceHistory, false);
+    }
+    if (activePage && activePage.id === 'page-dashboard') {
+      drawChart('dashChart', priceHistory, true);
+    }
+  }
+
+  function setTimeframe(tf, btn) {
+    currentTF = tf;
+    document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    // Adjust history length per timeframe
+    const lens = { '1m': 60, '5m': 90, '1h': 100, '1d': 120 };
+    seedHistory(lens[tf] || 80);
+    drawChart('emcChart', priceHistory, false);
+  }
+
+  function initCharts() {
+    seedHistory(80);
+    drawChart('emcChart', priceHistory, false);
+    drawChart('dashChart', priceHistory, true);
+    updatePriceUI();
+  }
+
+  // Resize handler
+  window.addEventListener('resize', () => {
+    drawChart('emcChart', priceHistory, false);
+    drawChart('dashChart', priceHistory, true);
+  });
+
+  // Start ticking — very fast for chaos effect
+  setInterval(tickChart, 500);
+
+  // ---- ROUTING ----
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    window.scrollTo(0, 0);
+    // Redraw charts for the new page
+    setTimeout(() => {
+      if (page === 'home') drawChart('emcChart', priceHistory, false);
+      if (page === 'dashboard') drawChart('dashChart', priceHistory, true);
+    }, 50);
+  }
+
+  function requireAuth(page) {
+    if (!currentUser) {
+      showPage('login');
+    } else {
+      if (page === 'dashboard') refreshDashboard();
+      showPage(page);
+    }
+  }
+
+  // ---- AUTH ----
+  function doSignup() {
+    const username = document.getElementById('signup-username').value.trim().toLowerCase().replace(/\s+/g, '_');
+    const alertEl = document.getElementById('signup-alert');
+
+    if (!username) return showAlert(alertEl, 'error', 'Please enter a username.');
+    if (username.length < 3) return showAlert(alertEl, 'error', 'Username must be at least 3 characters.');
+    if (accounts[username]) return showAlert(alertEl, 'error', 'That username is already taken.');
+
+    accounts[username] = { name: username, username, balance: 100, spent: 0, transactions: [
+      { label: 'Welcome Bonus', type: 'AIRDROP', amount: 100, date: 'Just now' }
+    ]};
+    localStorage.setItem('emc_accounts', JSON.stringify(accounts));
+
+    setUser(accounts[username]);
+    showAlert(alertEl, 'success', '🎉 Account created! Redirecting...');
+    setTimeout(() => { refreshDashboard(); showPage('dashboard'); }, 1200);
+  }
+
+  function doLogin() {
+    const username = document.getElementById('login-username').value.trim().toLowerCase().replace(/\s+/g, '_');
+    const alertEl = document.getElementById('login-alert');
+
+    if (!username) return showAlert(alertEl, 'error', 'Please enter your username.');
+    const user = accounts[username];
+    if (!user) return showAlert(alertEl, 'error', 'No account found with that username.');
+
+    setUser(user);
+    refreshDashboard();
+    showPage('dashboard');
+  }
+
+  function logout() {
+    currentUser = null;
+    document.getElementById('nav-auth').style.display = 'flex';
+    document.getElementById('nav-user').style.display = 'none';
+    showPage('home');
+  }
+
+  function setUser(user) {
+    currentUser = user;
+    document.getElementById('nav-auth').style.display = 'none';
+    document.getElementById('nav-user').style.display = 'flex';
+    document.getElementById('nav-username').textContent = user.username.toUpperCase();
+  }
+
+  // ---- INSURANCE ----
+  function payInsurance() {
+    const u = accounts[currentUser.username];
+    const emcCost = parseFloat((200 / emcPrice).toFixed(4));
+
+    if (u.balance < emcCost) {
+      // Flash the balance card red briefly
+      const bc = document.querySelector('.balance-card');
+      bc.style.borderColor = 'var(--red)';
+      bc.style.boxShadow = '0 0 30px rgba(255,92,92,0.2)';
+      setTimeout(() => { bc.style.borderColor = 'var(--gold)'; bc.style.boxShadow = '0 0 40px rgba(245,200,66,0.08)'; }, 1500);
+
+      // Show insufficient funds modal
+      document.getElementById('insurance-fail-cost').textContent = emcCost.toLocaleString() + ' EMC';
+      document.getElementById('insurance-fail-balance').textContent = u.balance.toLocaleString() + ' EMC';
+      document.getElementById('insurance-fail-modal').classList.add('open');
+      return;
+    }
+
+    u.balance = parseFloat((u.balance - emcCost).toFixed(4));
+    const now = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    u.transactions.push({ label: 'Insurance Premium', type: 'INSURANCE', amount: -emcCost, date: now });
+    localStorage.setItem('emc_accounts', JSON.stringify(accounts));
+
+    // Show success modal
+    document.getElementById('ins-emc-paid').textContent = emcCost.toLocaleString() + ' EMC';
+    document.getElementById('ins-usd-paid').textContent = '$200.00';
+    document.getElementById('insurance-modal').classList.add('open');
+    refreshDashboard();
+  }
+
+  // ---- DASHBOARD ----
+  function refreshDashboard() {
+    if (!currentUser) return;
+    const u = accounts[currentUser.username];
+    document.getElementById('dash-username').textContent = u.username;
+    document.getElementById('dash-balance').textContent = u.balance.toLocaleString();
+    document.getElementById('dash-usd').textContent = '$' + (u.balance * emcPrice).toFixed(2);
+    document.getElementById('dash-spent').textContent = '$' + (u.spent || 0).toFixed(2);
+    const profit = (u.balance * emcPrice) - (u.spent || 0);
+    document.getElementById('dash-profit').textContent = '$' + Math.max(0, profit).toFixed(2);
+
+    // Update insurance EMC cost display
+    const insCost = document.getElementById('insurance-emc-cost');
+    if (insCost) insCost.textContent = (200 / emcPrice).toFixed(4) + ' EMC';
+
+    const list = document.getElementById('tx-list');
+    list.innerHTML = '';
+    (u.transactions || []).slice().reverse().forEach(tx => {
+      const li = document.createElement('li');
+      li.className = 'tx-item';
+      li.innerHTML = `
+        <div>
+          <div style="font-size:13px;font-weight:500;">${tx.label}</div>
+          <div class="tx-type">${tx.type} · ${tx.date}</div>
+        </div>
+        <div class="${tx.amount > 0 ? 'tx-amount-pos' : 'tx-amount-neg'}">${tx.amount > 0 ? '+' : ''}${tx.amount} EMC</div>
+      `;
+      list.appendChild(li);
+    });
+  }
+
+  // ---- BUY ----
+  function setAmount(val) {
+    document.getElementById('buy-amount').value = val;
+    document.querySelectorAll('.qa-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    updateBuyPreview();
+  }
+
+  function updateBuyPreview() {
+    const usd = parseFloat(document.getElementById('buy-amount').value) || 0;
+    const emc = usd / emcPrice;
+    document.getElementById('buy-preview').textContent = emc > 0 ? emc.toFixed(4) + ' EMC' : '0 EMC';
+    document.getElementById('pr-sub').textContent = '$' + usd.toFixed(2);
+    document.getElementById('pr-total').textContent = '$' + usd.toFixed(2);
+  }
+
+  function selectPM(pm) {
+    selectedPM = pm;
+    ['card','bank','crypto'].forEach(m => {
+      document.getElementById('pm-' + m).classList.toggle('active', m === pm);
+      document.getElementById('pm-' + m + '-fields').style.display = m === pm ? 'block' : 'none';
+    });
+  }
+
+  function doPurchase() {
+    const usd = parseFloat(document.getElementById('buy-amount').value);
+    if (!usd || usd <= 0) return alert('Please enter an amount to purchase.');
+    const emc = parseFloat((usd / emcPrice).toFixed(4));
+
+    // Update account
+    const u = accounts[currentUser.username];
+    u.balance = parseFloat((u.balance + emc).toFixed(4));
+    u.spent = parseFloat(((u.spent || 0) + usd).toFixed(2));
+    const now = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    u.transactions.push({ label: `Bought EmmettCoin`, type: 'PURCHASE', amount: emc, date: now });
+    localStorage.setItem('emc_accounts', JSON.stringify(accounts));
+
+    // Show modal
+    document.getElementById('modal-emc').textContent = emc.toLocaleString() + ' EMC';
+    document.getElementById('modal-usd').textContent = '$' + usd.toFixed(2);
+    document.getElementById('success-modal').classList.add('open');
+    document.getElementById('buy-amount').value = '';
+    updateBuyPreview();
+  }
+
+  function closeModal() {
+    document.getElementById('success-modal').classList.remove('open');
+    refreshDashboard();
+    showPage('dashboard');
+  }
+
+  // ---- UTILS ----
+  function showAlert(el, type, msg) {
+    el.className = 'alert ' + type;
+    el.textContent = msg;
+  }
+
+  function formatCard(input) {
+    let v = input.value.replace(/\D/g, '').substring(0, 16);
+    input.value = v.replace(/(.{4})/g, '$1 ').trim();
+  }
+
+  // Init on load
+  window.addEventListener('load', initCharts);
+</script>
+<!-- INSURANCE SUCCESS MODAL -->
+<div class="modal-overlay" id="insurance-modal">
+  <div class="modal">
+    <div class="modal-icon">🛡️</div>
+    <div class="modal-title" style="color:#39d98a;">Covered!</div>
+    <div class="modal-body">
+      You paid <strong id="ins-emc-paid">0 EMC</strong> (≈ <strong id="ins-usd-paid">$200.00</strong>) for your monthly EmmettCoin Protection Plan™.<br><br>
+      Your imaginary assets are now protected against completely fictional risks. Sleep well!
+    </div>
+    <button class="btn-primary" onclick="document.getElementById('insurance-modal').classList.remove('open')" style="width:100%;background:#39d98a;color:#000;">
+      ✓ Got It
+    </button>
+  </div>
+</div>
+
+<!-- INSURANCE FAIL MODAL -->
+<div class="modal-overlay" id="insurance-fail-modal">
+  <div class="modal">
+    <div class="modal-icon">😬</div>
+    <div class="modal-title" style="color:var(--red);">Insufficient Funds</div>
+    <div class="modal-body">
+      You need <strong id="insurance-fail-cost">0 EMC</strong> to pay your insurance premium, but you only have <strong id="insurance-fail-balance">0 EMC</strong>.<br><br>
+      Buy more EmmettCoin to stay protected from imaginary disasters!
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-ghost" onclick="document.getElementById('insurance-fail-modal').classList.remove('open')" style="flex:1;">Dismiss</button>
+      <button class="btn-primary" onclick="document.getElementById('insurance-fail-modal').classList.remove('open');showPage('buy')" style="flex:1;">Buy EMC</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
